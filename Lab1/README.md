@@ -33,7 +33,7 @@ To access these emulators, locate the Run menu along the File menu bar along the
 
 Select Launch emulator and click the ellipsis for further options. This window shows your currently available virtual devices. From this screen you can also create new virtual devices by selecting from a list of popular device models, API system images, and other hardware settings such as how to model front/back cameras, available memory, etc. 
 
-For now we’ll be using a Nexus 5 emulated on system image API 21. If that device does not yet exist in your list, go ahead and create it now then run the emulator. A tip regarding the emulator; once you've ran it for the first time during your login session, leave it open. Android Studio will use the already running instance to reflect new image states, saving you the initial startup times of the emulator loading itself into memory.
+For now we’ll be using a Nexus 5 emulated on system image API 23. If that device does not yet exist in your list, go ahead and create it now then run the emulator. A tip regarding the emulator; once you've ran it for the first time during your login session, leave it open. Android Studio will use the already running instance to reflect new image states, saving you the initial startup times of the emulator loading itself into memory.
 
 ###### 5. Running From Device
 _Unlocking Developer Mode for Device:_
@@ -71,7 +71,7 @@ Run the application by emulator once again and you’ll see the changes you’ve
 Take a screenshot of the emulator and save to verify your work.
 
 ###### 7. Project Structure
-Under properties once again, locate the 'text' attribute. Note the ```“@string/hello_world”``` value. This is a resource reference to a string contained within this Android Studio project structure. We will now take a look at what every Android Studio project structure has in common to develop an understanding of how this folder structure is navigated and how each piece ties together.
+We will now take a look at what every Android Studio project structure has in common to develop an understanding of how this folder structure is navigated and how each piece ties together.
 
 More information about the project structure can be found at [https://developer.android.com/tools/projects/index.html#ProjectFiles](https://developer.android.com/tools/projects/index.html#ProjectFiles)
 
@@ -110,9 +110,7 @@ This directory contains the AndroidManifest.xml file. This file contains informa
 
 Additional AndroidManifest.xml information: [https://developer.android.com/guide/topics/manifest/manifest-intro.html](https://developer.android.com/guide/topics/manifest/manifest-intro.html)
 
-**2. Deliverable** Read about [Intent Filters](https://developer.android.com/guide/topics/manifest/manifest-intro.html#ifs) and provide a brief description of what Android Intents are and why Intent Filters are important to an Android Activity. 
-
-**3. Deliverable** The application theme is also described in this AndroidManifest file; provide the attribute tag that describes this.
+**2. Deliverable** The application theme is also described in this AndroidManifest file; provide the attribute tag that describes this.
 
 Note the android:label attribute tag contains the application name we gave to our project. If you click this an @string resource named app_name will be revealed in as being the source of this text. We’ll explore the strings.xml resource below.
 
@@ -128,7 +126,7 @@ Here we see ```onCreate()```, ```onCreateOptionsMenu()```, and ```onOptionsItemS
 
 Explore http://developer.android.com/reference/android/app/Activity.html and find the method ```setContentView()``` that is used inside the ```onCreate()``` method. Be sure to find the method which takes the proper parameter type, in this case a layout resource ID. 
 
-**4. Deliverable** Describe what the ```setContentView()``` method call accomplishes for your application
+**3. Deliverable** Describe what the ```setContentView()``` method call accomplishes for your application
 
 Because we've removed the FloatingActionButton in our layout, let's go ahead and remove the code pertaining to this button from our ```onCreate()``` method. Find these lines and delete them.
 
@@ -153,7 +151,7 @@ The mipmap directory contains icons used for launch deck icons for the applicati
 
 Explore http://developer.android.com/guide/topics/ui/declaring-layout.html. 
 
-**5. Deliverable** What are the three common layout types? Why is it important to define IDs for view objects, especially when using RelativeLayout? 
+**4. Deliverable** What are the three common layout types? Why is it important to define IDs for view objects, especially when using RelativeLayout? 
 
 Under the values directory there first is a colors.xml. Initially this file contains the ```Primary```, ```Primary Dark```, and ```Accent``` colors for your application. These are used to simply create a cohesive color scheme experience across the application by allowing the Android OS to allow existing Android View Object components to rely on these three initial colors for coloring common application components (```TaskBars```, etc.). 
 
@@ -184,8 +182,8 @@ In the values-es/strings.xml file, add the following:
 
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="title">Mi Aplicación</string>
-    <string name="hello_world">Hola Mundo!</string>
+    <string name="app_name">Mi Aplicación</string>
+    <string name="action_settings">Ajustes</string>
 </resources>
 ```
 In the values-fr/strings.xml file, add the following:
@@ -193,12 +191,17 @@ In the values-fr/strings.xml file, add the following:
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="title">Mon Application</string>
-    <string name="hello_world">Bonjour le monde !</string>
+    <string name="app_name">Mon Application</string>
+    <string name="action_settings">Paramètres</string>
 </resources>
 ```
 
-Run the application via the emulator once again. Access the application deck from inside the emulator and locate the icon Custom locale. Set the locale to fr-French then locate your application icon in the application deck. Open your application and you will see your French strings have been selected based on your custom locale choice. Take a screenshot of the emulator and save. Set the locale to es-Spanish and do the same. Once you have your screenshots saved, set the locale back to en-US.
+Run the application via the emulator once again. Access the settings menu from inside the emulator and set the language to French. Then locate your application icon in the application deck. Open your application and you will see your French strings have been selected based on your custom locale choice. Set the locale to es-Spanish and do the same. 
+
+Notice that the string "Hello World!" is unaffected! This is because this string is hard-coded in content_main.xml. This is bad practice. Add a new string for "Hello World!" (or its translation) to each of your string resource files. Then modify content_main.xml to use this new string.
+
+Once you've done this, take screenshots of your application with French and Spanish translations and save them. Then set the language of the emulator back to your preferred language.
+
 
 ###### 9. Console Log Debugging
 
@@ -216,5 +219,5 @@ Log.i(TAG, "This is a log display!");
 
 Run the application via the emulator or device once more. Along the bottom portion of Android Studio, note the Run, TODO, 6: Android, Terminal, 0: Messages tabs. Click the 6: Android tab. Near the top of this window locate the Log level: dropdown. Set to Info and in the adjacent search field type MainActivity. You’ll be presented with a console log information that you built into the ```onCreate()``` function. This tactic can be utilized throughout the development cycle to test certain portions of your code to know how an application is behaving and where in the Activity lifecycle your application may be encountering problems.! 
 
-**6. Deliverable** Take and save a screenshot of the log message window.
+**5. Deliverable** Take and save a screenshot of the log message window.
 
