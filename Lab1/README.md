@@ -65,6 +65,19 @@ If you access the Text tab at the bottom-left of the layout editor you can locat
 
 Also note in the activity_main.xml Text tab that the entire layout you see in the layout editor appears described in XML. The same is true for content_main.xml. This provides two ways to work on Activity layouts.
 
+Because we've removed the FloatingActionButton in our layout, let's go ahead and remove the code pertaining to this button from our ```onCreate()``` method. Find these lines and delete them.
+
+```java
+FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+```
+
 Run the application by emulator once again and you’ll see the changes you’ve made reflected. 
 
 **1. Deliverable**
@@ -128,18 +141,6 @@ Explore http://developer.android.com/reference/android/app/Activity.html and fin
 
 **3. Deliverable** Describe what the ```setContentView()``` method call accomplishes for your application
 
-Because we've removed the FloatingActionButton in our layout, let's go ahead and remove the code pertaining to this button from our ```onCreate()``` method. Find these lines and delete them.
-
-```java
-FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-```
 
 ###### 7c. res directory
 
