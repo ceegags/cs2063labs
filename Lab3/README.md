@@ -1,7 +1,9 @@
 # Lab 3
 
-##Background: For this lab you need to be familiar with with how to
-  build an ```Intent``` and how to construct and call new Activities:
+####Background: 
+
+For this lab you need to be familiar with with how to build an
+```Intent``` and how to construct and call new Activities:
 
 * http://developer.android.com/training/basics/firstapp/starting-activity.html#BuildIntent
 * http://developer.android.com/training/basics/firstapp/starting-activity.html#CreateActivity
@@ -10,8 +12,6 @@ Here is a list of common Intents. This isn't necessary for pre-lab reading, but 
 
 http://developer.android.com/guide/components/intents-common.html
 
-
-##Part 1: Intents
 
 ####Objectives:
 
@@ -120,7 +120,7 @@ Write a short description of your observations and relate this to what you learn
 
 **Deliverables** Show the following to the instructor or TA
 
-* Your working app from part 1
-* The screenshot you took of the email sent by your app from part 1
-* Your answers to the questions about the back button from part 1
+* Your working app
+* The screenshot you took of the email sent by your app
+* Your answers to the questions about the back button
 
