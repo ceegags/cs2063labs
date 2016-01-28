@@ -2,12 +2,14 @@ package mobiledev.unb.ca.lab2activitylifecycle;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 
 public class ActivityOne extends Activity {
@@ -34,6 +36,11 @@ public class ActivityOne extends Activity {
     private int mOnRestartCount = 0;
     private Button mActivityTwoBtn;
 
+
+    private TextView mOnCreateText;
+    private TextView mOnStartText;
+    private TextView mOnResumeText;
+    private TextView mOnRestartText;
 
 
     // TODO 2:
@@ -66,7 +73,7 @@ public class ActivityOne extends Activity {
                 // it will need access to an email application activity. We will
                 // investigate intents further in a future lab!
                 Intent intent = new Intent(ActivityOne.this, ActivityTwo.class);
-
+                startActivity(intent);
                 // TODO 3:
                 // Launch the Activity using the above intent. For more information,
                 // consult the Android API documentation for starting activities:
@@ -79,7 +86,10 @@ public class ActivityOne extends Activity {
         // Use the above Button resource reference example to capture TextView
         // references for mOnCreateText, mOnStartText, mOnResumeText, and
         // mOnRestartText
-
+        mOnCreateText = (TextView) findViewById(R.id.onCreate);
+        mOnStartText = (TextView) findViewById(R.id.onStart);
+        mOnResumeText = (TextView) findViewById(R.id.onResume);
+        mOnRestartText = (TextView) findViewById(R.id.onRestart);
 
         // HINT for 6:
         // This checks whether or not a savedInstanceState currently exists
@@ -87,24 +97,32 @@ public class ActivityOne extends Activity {
         if (savedInstanceState != null) {
 
             mOnCreateCount = savedInstanceState.getInt(CREATE_VALUE);
-
+            mOnStartCount = savedInstanceState.getInt(START_VALUE);
+            mOnResumeCount = savedInstanceState.getInt(RESUME_VALUE);
+            mOnRestartCount = savedInstanceState.getInt(RESTART_VALUE);
             // TODO 6:
             // If a savedInstanceState Bundle exists then there have already
             // been system calls made to activity lifecycle methods. We can
             // use this Bundle to set current values.
         }
 
+        mOnCreateCount++;
         // TODO 8:
         // Increment mOnCreateCount
 
         updateCountsDisplay();
+
     }
 
     @Override
     public void onStart() {
         Log.i(TAG, "onStart() called");
         super.onStart();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
 
+
+        mOnStartCount++;
         // TODO 8:
         // Increment mOnStartCount
 
@@ -116,6 +134,7 @@ public class ActivityOne extends Activity {
         Log.i(TAG, "onResume() called");
         super.onResume();
 
+        mOnResumeCount++;
         // TODO 8:
         // Increment mOnResumeCount
 
@@ -127,6 +146,7 @@ public class ActivityOne extends Activity {
         Log.i(TAG, "onRestart() called");
         super.onRestart();
 
+        mOnRestartCount++;
         // TODO 8:
         // Increment mOnRestartCount
 
@@ -137,6 +157,9 @@ public class ActivityOne extends Activity {
     public void onSaveInstanceState(Bundle savedInstanceState) {
 
         savedInstanceState.putInt(CREATE_VALUE, mOnCreateCount);
+        savedInstanceState.putInt(START_VALUE, mOnStartCount);
+        savedInstanceState.putInt(RESUME_VALUE, mOnResumeCount);
+        savedInstanceState.putInt(RESTART_VALUE, mOnRestartCount);
 
         // TODO 5:
         // Following the above example, save the current counters to a
@@ -151,11 +174,15 @@ public class ActivityOne extends Activity {
 
     public void updateCountsDisplay() {
 
-        YourOnCreateTextVariableName.setText("onCreate() calls: " + mOnCreateCount);
-
+        mOnCreateText.setText("onCreate() calls: " + mOnCreateCount);
+        mOnStartText.setText("onStart() calls: " + mOnStartCount);
+        mOnResumeText.setText("onResume() calls: " + mOnResumeCount);
+        mOnRestartText.setText("onRestart() calls: " + mOnRestartCount);
         // TODO 7:
         // Update the TextView resources to the correct counter.
         // Follow the provided example.
+
+
     }
 
     @Override
@@ -178,5 +205,11 @@ public class ActivityOne extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
     }
 }
