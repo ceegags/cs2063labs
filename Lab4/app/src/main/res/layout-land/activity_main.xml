@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <fragment
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:name="mobiledev.unb.ca.lab4.FragmentA"
+        android:id="@+id/fragmentA"
+        tools:layout="@layout/activity_fragment_a" />
+    <fragment
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:name="mobiledev.unb.ca.lab4.FragmentB"
+        android:id="@+id/fragmentB"
+        tools:layout="@layout/activity_fragment_b" />
+</LinearLayout>
