@@ -23,6 +23,7 @@ public class CourseDetailFragment extends Fragment {
      * represents.
      */
     public static final String ARG_ITEM_ID = "item_id";
+    public static final String ARG_COURSE = "course_name";
 
 
     /** TODO 9:
@@ -33,7 +34,7 @@ public class CourseDetailFragment extends Fragment {
      * we are interested in.
      *
      */
-    private DummyContent.DummyItem mItem;
+    private String mItem;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -57,12 +58,12 @@ public class CourseDetailFragment extends Fragment {
              * from the data passed to us in the Bundle.
              *
              */
-            mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
+            mItem = getArguments().getString(ARG_ITEM_ID);
 
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
-                appBarLayout.setTitle("Courses");
+                appBarLayout.setTitle(getArguments().getString(ARG_COURSE));
             }
         }
     }
@@ -84,7 +85,7 @@ public class CourseDetailFragment extends Fragment {
          *
          */
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.course_detail)).setText(mItem.details);
+            ((TextView) rootView.findViewById(R.id.course_detail)).setText(mItem.toString());
         }
 
         return rootView;

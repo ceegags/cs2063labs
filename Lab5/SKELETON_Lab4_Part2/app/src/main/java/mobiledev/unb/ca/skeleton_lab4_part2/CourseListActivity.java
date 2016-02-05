@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import mobiledev.unb.ca.skeleton_lab4_part2.dummy.DummyContent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,6 +37,8 @@ public class CourseListActivity extends AppCompatActivity {
      */
     private boolean mTwoPane;
 
+    DataModel dataMember;
+    ArrayList<Course> listOfCourse;
     /** TODO 1:
      *
      * Create a DataModel member and List of Course member
@@ -46,7 +49,8 @@ public class CourseListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_list);
-
+        dataMember = new DataModel(this);
+        listOfCourse = dataMember.getCourses();
         /** TODO 2:
          *
          * Create a new DataModel instance and get its list of courses. Store these in
@@ -91,7 +95,7 @@ public class CourseListActivity extends AppCompatActivity {
      *
      */
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(listOfCourse));
     }
 
     public class SimpleItemRecyclerViewAdapter
@@ -104,7 +108,7 @@ public class CourseListActivity extends AppCompatActivity {
          * our DataModel above.
          *
          */
-        private final List<DummyContent.DummyItem> mValues;
+        private final List<Course> mValues;
 
 
         /** TODO 5:
@@ -112,7 +116,7 @@ public class CourseListActivity extends AppCompatActivity {
          * Again, replace the instance of DummyContent with our Course items.
          *
          */
-        public SimpleItemRecyclerViewAdapter(List<DummyContent.DummyItem> items) {
+        public SimpleItemRecyclerViewAdapter(List<Course> items) {
             mValues = items;
         }
 
@@ -136,7 +140,7 @@ public class CourseListActivity extends AppCompatActivity {
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mItem = mValues.get(position);
             holder.mIdView.setText(mValues.get(position).id);
-            holder.mContentView.setText(mValues.get(position).content);
+            holder.mContentView.setText(mValues.get(position).getName());
 
             /** TODO 8:
              *
@@ -167,7 +171,8 @@ public class CourseListActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     if (mTwoPane) {
                         Bundle arguments = new Bundle();
-                        arguments.putString(CourseDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+                        arguments.putString(CourseDetailFragment.ARG_ITEM_ID, holder.mItem.getDesc());
+                        arguments.putString(CourseDetailFragment.ARG_COURSE, holder.mItem.getName());
                         CourseDetailFragment fragment = new CourseDetailFragment();
                         fragment.setArguments(arguments);
                         getSupportFragmentManager().beginTransaction()
@@ -176,7 +181,8 @@ public class CourseListActivity extends AppCompatActivity {
                     } else {
                         Context context = v.getContext();
                         Intent intent = new Intent(context, CourseDetailActivity.class);
-                        intent.putExtra(CourseDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+                        intent.putExtra(CourseDetailFragment.ARG_ITEM_ID, holder.mItem.getDesc());
+                        intent.putExtra(CourseDetailFragment.ARG_COURSE, holder.mItem.getName());
 
                         context.startActivity(intent);
                     }
@@ -199,7 +205,7 @@ public class CourseListActivity extends AppCompatActivity {
             public final View mView;
             public final TextView mIdView;
             public final TextView mContentView;
-            public DummyContent.DummyItem mItem;
+            public Course mItem;
 
             public ViewHolder(View view) {
                 super(view);
