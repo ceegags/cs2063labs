@@ -23,6 +23,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class NetworkingURLActivity extends Activity {
 	private TextView mTextView;
 
@@ -92,26 +96,50 @@ public class NetworkingURLActivity extends Activity {
 		}
 
 		private String readStream(InputStream in) {
-			BufferedReader reader = null;
-			StringBuilder data = new StringBuilder("");
-			try {
-				reader = new BufferedReader(new InputStreamReader(in));
-				String line;
-				while ((line = reader.readLine()) != null) {
-					data.append(line);
-				}
-			} catch (IOException e) {
-				Log.e(TAG, "IOException");
-			} finally {
-				if (reader != null) {
-					try {
-						reader.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-			return data.toString();
+            BufferedReader reader = null;
+            StringBuilder data = new StringBuilder("");
+            try {
+                reader = new BufferedReader(new InputStreamReader(in));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    data.append(line);
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "IOException");
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return processJSON(data.toString());
+        }
+
+        private String processJSON(String data) {
+            String result = "";
+            try {
+                JSONObject jsonObject = new JSONObject(data);
+                JSONArray jsonArray = jsonObject.getJSONArray("features");
+
+                for (int i=0; i < jsonArray.length(); i++)
+                {
+                    try {
+                        JSONObject oneObject = jsonArray.getJSONObject(i);
+                        JSONObject properties = oneObject.getJSONObject("properties");
+                        String place = properties.getString("place");
+                        result = result + place + "\n";
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return result;
 		}
 	}
 }
