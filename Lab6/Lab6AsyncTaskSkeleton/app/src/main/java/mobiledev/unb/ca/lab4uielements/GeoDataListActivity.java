@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -199,13 +200,24 @@ public class GeoDataListActivity extends AppCompatActivity {
         // http://developer.android.com/training/basics/network-ops/connecting.html
         // Hint: Read this for help with Toast:
         // http://developer.android.com/guide/topics/ui/notifiers/toasts.html
-
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            new DownloaderTask().execute();
+        } else {
+            Toast.makeText(GeoDataListActivity.this,
+                    R.string.no_network,
+                    Toast.LENGTH_SHORT).show();
+        }
 
     }
 
     public class DownloaderTask extends AsyncTask<Void, Integer, String> {
 
         // TODO Get a reference to the progress bar so we can interact with it later
+        ProgressBar pb = (ProgressBar) findViewById(R.id.progressBar);
+        Handler h = new Handler();
 
         @Override
         protected void onPreExecute() {
@@ -219,13 +231,16 @@ public class GeoDataListActivity extends AppCompatActivity {
             // Hint: Button is subclass of TextView. Read this document to see how to
             // disable it.
             // http://developer.android.com/reference/android/widget/TextView.html
+            mBgButton.setClickable(false);
 
 
             // TODO Set the progress bar's maximum to be downloadTime, its initial progress to be
             // 0, and also make sure it's visible.
             // Hint: Read the documentation on ProgressBar
             // http://developer.android.com/reference/android/widget/ProgressBar.html
-
+            pb.setMax(downloadTime);
+            pb.setProgress(0);
+            pb.setVisibility(View.VISIBLE);
 
         }
         @Override
@@ -233,6 +248,8 @@ public class GeoDataListActivity extends AppCompatActivity {
 
             // TODO Create an instance of DataModel and get the data from it. Store the data
             // in mGeoDataList
+            DataModel dm = new DataModel();
+            mGeoDataList = dm.getGeoData();
 
 
             // Leave this while loop here to simulate a lengthy download
@@ -241,6 +258,7 @@ public class GeoDataListActivity extends AppCompatActivity {
                     Thread.sleep(1000);
                     // TODO update the progress bar; calculate an appropriate value for
                     // the new progress using i
+                    publishProgress(i*2);
 
 
                 } catch (Exception e) {
@@ -259,16 +277,22 @@ public class GeoDataListActivity extends AppCompatActivity {
             super.onPostExecute(result);
 
             // TODO Now that the download is complete, enable the button again
-
+            mBgButton.setClickable(true);
 
             // TODO Reset the progress bar, and make it disappear
-
+            pb.setVisibility(View.INVISIBLE);
+            pb.setProgress(0);
 
             // TODO Setup the RecyclerView
+            RecyclerView recyclerView = (RecyclerView) findViewById(R.id.geodata_list);
+            setupRecyclerView(recyclerView);
 
 
             // TODO Create a Toast indicating that the download is complete. Set its text
             // to be the result String from doInBackground
+            Toast.makeText(GeoDataListActivity.this,
+                    result,
+                    Toast.LENGTH_SHORT).show();
 
         }
 
@@ -279,7 +303,7 @@ public class GeoDataListActivity extends AppCompatActivity {
         protected void onProgressUpdate(Integer... values) {
 
             // TODO Update the progress bar using values
-
+            pb.setProgress(values[0]);
 
         }
     }

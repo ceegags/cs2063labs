@@ -1,5 +1,7 @@
 package mobiledev.unb.ca.lab4uielements;
 
+import android.util.Log;
+
 import javax.json.Json;
 import javax.json.stream.JsonParser;
 
@@ -14,7 +16,7 @@ import java.util.ArrayList;
 public class DataModel {
 
     private ArrayList<GeoData> geoDataArray = new ArrayList<>();
-
+    private static final String DEBUG_TAG = "GeoDataExample";
     // Initializer to read our data source (JSON file) into an array of course objects
     public DataModel() {
 
@@ -25,8 +27,15 @@ public class DataModel {
         InputStream inputStream = null;
         String requestURL = "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson";
         try {
-
-            HttpURLConnection connection = null;
+            URL url = new URL(requestURL);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setReadTimeout(10000);
+            connection.setConnectTimeout(15000);
+            connection.setRequestMethod("GET");
+            connection.setDoInput(true);
+            connection.connect();
+            int response = connection.getResponseCode();
+            Log.d(DEBUG_TAG,"The response is: " + response);
 
             // TODO Establish an HttpURLConnecion to requestURL
             // Hint: Read this:
