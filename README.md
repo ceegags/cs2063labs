@@ -1,2 +1,3 @@
 # cs2063labs
-Labs for CS2063
+
+Labs and example apps for CS2063 at the University of New Brunswick.
