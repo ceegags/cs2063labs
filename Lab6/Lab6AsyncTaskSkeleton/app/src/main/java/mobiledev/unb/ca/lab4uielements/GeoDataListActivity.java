@@ -258,7 +258,7 @@ public class GeoDataListActivity extends AppCompatActivity {
                     Thread.sleep(1000);
                     // TODO update the progress bar; calculate an appropriate value for
                     // the new progress using i
-                    publishProgress(i*2);
+                    publishProgress(i+1);
 
 
                 } catch (Exception e) {
