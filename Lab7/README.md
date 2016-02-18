@@ -34,11 +34,9 @@ Have fun!
 
 ## Help
 
-```SoundPool```:
-http://developer.android.com/reference/android/media/SoundPool.html
-Also see the ```SoundPool``` example on the course github.
+SoundPool http://developer.android.com/reference/android/media/SoundPool.html Also see the ```SoundPool``` example on the course github.
 
-```MotionEvent```:
+MotionEvent
 http://developer.android.com/reference/android/view/MotionEvent.html 
 
 See the ```GestureDetector``` examples here:
