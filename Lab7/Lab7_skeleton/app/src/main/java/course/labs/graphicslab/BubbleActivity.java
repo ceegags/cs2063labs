@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -83,15 +84,20 @@ public class BubbleActivity extends Activity {
 
 		// TODO - make a new SoundPool, allowing up to 10 streams
         // Store this as mSoundPool
-
+		mSoundPool = new SoundPool(10,AudioManager.STREAM_MUSIC,0);
 
 		// TODO - set a SoundPool OnLoadCompletedListener that calls
 		// setupGestureDetector()
-
+		mSoundPool.setOnLoadCompleteListener(new OnLoadCompleteListener() {
+			@Override
+			public void onLoadComplete(SoundPool soundPool, int i, int i1) {
+				setupGestureDetector();
+			}
+		});
 
 		// TODO - load the sound from res/raw/bubble_pop.wav
         // Store this as mSoundID
-
+		mSoundID = mSoundPool.load(this,R.raw.bubble_pop,1);
 
 	}
 
@@ -125,7 +131,12 @@ public class BubbleActivity extends Activity {
 				// (See comment above for expected behaviour.)
 				// You can get all Views in mFrame one at a time
 				// using the ViewGroup.getChildAt() method.
-
+				for (int i = 0; i < mFrame.getChildCount(); i++) {
+					if (((BubbleView)(mFrame.getChildAt(i))).intersects(event1.getX(),event1.getY())) {
+						BubbleView bv = (BubbleView)mFrame.getChildAt(i);
+						bv.deflect(velocityX,velocityY);
+					}
+				}
 
 
 
@@ -145,10 +156,17 @@ public class BubbleActivity extends Activity {
                 // (See comment above for expected behaviour.)
                 // You can get all Views in mFrame using the
 				// ViewGroup.getChildCount() method
-
-
-
-
+				for (int i = 0; i < mFrame.getChildCount(); i++) {
+					if (((BubbleView)(mFrame.getChildAt(i))).intersects(event.getX(),event.getY())) {
+						BubbleView bv = (BubbleView)mFrame.getChildAt(i);
+						bv.stopMovement(true);
+						return true;
+					}
+				}
+				BubbleView bv = new BubbleView(mFrame.getContext(),event.getX(),event.getY());
+				mFrame.addView(bv);
+				bv.startMovement();
+				mBubbleCountTextView.setText((Integer.parseInt(mBubbleCountTextView.getText().toString())+1)+"");
 				return true;
 			}
 		});
@@ -159,9 +177,8 @@ public class BubbleActivity extends Activity {
 
 		// TODO - Delegate the touch to the gestureDetector
 
+		return mGestureDetector.onTouchEvent(event);
 
-        // Remove this when you're done the above todo
-        return true || false;
 		
 	}
 
@@ -169,7 +186,7 @@ public class BubbleActivity extends Activity {
 	protected void onPause() {
 
 		// TODO - Release all SoundPool resources
-
+		mSoundPool.release();
 
 		super.onPause();
 	}
@@ -225,24 +242,25 @@ public class BubbleActivity extends Activity {
 
 		private void setRotation(Random r) {
 			// TODO - set rotation in range [1..5]
-
+			mDRotate = r.nextInt(5)+1;
 
 		}
 
 		private void setSpeedAndDirection(Random r) {
 			// TODO - Set mDx and mDy to indicate movement direction and speed
 			// Limit speed in the x and y direction to [-3..3] pixels per movement.
-
+			mDx = r.nextInt(7) - 3;
+			mDy = r.nextInt(7) - 3;
 
 		}
 
 		private void createScaledBitmap(Random r) {
 
             // TODO - set scaled bitmap size (mScaledBitmapSize) in range [2..4] * BITMAP_SIZE
-
+			mScaledBitmapSize = (r.nextInt(3)+2)*BITMAP_SIZE;
 
 			// TODO - create the scaled bitmap (mScaledBitmap) using size set above
-
+			mScaledBitmap = Bitmap.createScaledBitmap(mBitmap, mScaledBitmapSize, mScaledBitmapSize, true);
 
 		}
 
@@ -266,7 +284,11 @@ public class BubbleActivity extends Activity {
 					// If the BubbleView exits the display, stop the BubbleView's
 					// Worker Thread. (Use stopMovement() to do this.) Otherwise,
 					// request that the BubbleView be redrawn.
-
+					if (moveWhileOnScreen()) {
+						postInvalidate();
+					} else {
+						stopMovement(false);
+					}
 
 
 				}
@@ -279,11 +301,7 @@ public class BubbleActivity extends Activity {
             float centerY = mYPos + mRadius;
 
 			// TODO - Return true if the BubbleView intersects position (x,y)
-
-
-
-            // Remove this when you're done the above todo
-            return false;
+			return (Math.abs(centerX-x) < mRadius && Math.abs(centerY-y) < mRadius);
 		}
 
 		// Cancel the Bubble's movement
@@ -303,14 +321,16 @@ public class BubbleActivity extends Activity {
 					@Override
 					public void run() {
 						// TODO - Remove the BubbleView from mFrame
-
+						mFrame.removeView(BubbleView.this);
 
 						// TODO - Update the TextView displaying the number of bubbles
-
+						mBubbleCountTextView.setText((Integer.parseInt(mBubbleCountTextView.getText().toString())-1)+"");
 
 						// TODO - If the bubble was popped by user,
 						// play the popping sound
-
+						if (wasPopped) {
+							mSoundPool.play(mSoundID,1,1,1,0,1);
+						}
 
 
 					}
@@ -329,20 +349,20 @@ public class BubbleActivity extends Activity {
 		protected synchronized void onDraw(Canvas canvas) {
 
 			// TODO - save the canvas
-
+			canvas.save();
 
 			// TODO - increase the rotation of the original image by mDRotate
-
+			mRotate += mDRotate;
 
 			// TODO Rotate the canvas by current rotation
 			// Hint - Rotate around the bubble's center, not its position
-
+			canvas.rotate(mRotate,mXPos+mScaledBitmapSize/2,mYPos+mScaledBitmapSize/2);
 
 			// TODO - draw the bitmap at it's new location
-
+			canvas.drawBitmap(mScaledBitmap,mXPos,mYPos,null);
 
 			// TODO - restore the canvas
-
+			canvas.restore();
 
 			
 		}
@@ -351,7 +371,8 @@ public class BubbleActivity extends Activity {
 		// operation
 		private synchronized boolean moveWhileOnScreen() {
 
-			// TODO - Move the BubbleView
+			mXPos += mDx;
+			mYPos += mDy;
 
 
 			return isOutOfView();
@@ -362,13 +383,8 @@ public class BubbleActivity extends Activity {
 		// operation
 		private boolean isOutOfView() {
 
-			// TODO - Return true if the BubbleView is still on the screen after
-			// the move operation
+			return !(mXPos+mRadius*2 < 0 || mXPos > mDisplayWidth || mYPos+mRadius*2 < 0 || mYPos > mDisplayHeight);
 
-
-
-            // Remove this when you're done the above todo
-            return false;
 		}
 	}
 
