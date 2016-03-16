@@ -21,7 +21,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     NUM + " INT);";
     private static final String TAG = "DBHelper";
     private static final String DATABASE_NAME = "mydb";
-    //final static String[] COLUMNS = { _ID, ITEM, NUM };
+    final static String[] COLUMNS = { _ID, ITEM, NUM };
 
     DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

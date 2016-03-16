@@ -14,6 +14,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +50,18 @@ public class MainActivity extends AppCompatActivity {
                 // EditTexts. If so, create and execute an AddTask, passing its
                 // doInBackground method the text from these EditTetxs. If not,
                 // display a toast indicating that the data entered was incomplete.
+                if (mItemEditText.getText().equals(null) || mNumberEditText.getText().equals(null)) {
+                    Context context = getApplicationContext();
+                    CharSequence text = "Invalid input";
+                    int duration = Toast.LENGTH_SHORT;
+
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.show();
+                } else {
+                    AddTask addTask = new AddTask();
+                    addTask.doInBackground(mItemEditText.getText().toString(),mNumberEditText.getText().toString());
+                    addTask.execute();
+                }
 
 
 
@@ -63,7 +76,10 @@ public class MainActivity extends AppCompatActivity {
                     // TODO v is the search EditText. (EditText is a subclass of TextView.)
                     // Get the text from this view. Create and execute a QueryTask passing
                     // its doInBackground method this text.
-
+                    String query = mSearchEditText.getText().toString();
+                    QueryTask queryTask = new QueryTask();
+                    queryTask.doInBackground(query);
+                    queryTask.execute();
 
 
                 }
@@ -78,8 +94,17 @@ public class MainActivity extends AppCompatActivity {
         protected Void doInBackground(String... params) {
             // TODO Get the item and number that were passed to this method
             // as params. Add a corresponding row to the the database.
-
-
+            String item = params[0];
+            String number = params[1];
+            SQLiteDatabase sqLiteDatabase = mDBHelper.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(DBHelper.ITEM, item);
+            values.put(DBHelper.NUM, number);
+            sqLiteDatabase.insert(
+                    DBHelper.TABLE_NAME,
+                    null,
+                    values);
+            sqLiteDatabase.insert(DBHelper.TABLE_NAME,null,values);
 
             return null;
         }
@@ -109,10 +134,10 @@ public class MainActivity extends AppCompatActivity {
             // HINT: See the link in README.md for documentation on Cursor,
             // in particular the methods moveToFirst(), isAfterLast(), and
             // moveToNext().
-
-
-
-
+            String query = params[0];
+            SQLiteDatabase sqLiteDatabase = mDBHelper.getReadableDatabase();
+            Cursor c = sqLiteDatabase.query(DBHelper.TABLE_NAME, DBHelper.COLUMNS, DBHelper.ITEM + "=?", new String[]{query}, null, null, DBHelper.NUM);
+            
             // TODO Remove this return statement when you are done
             return null;
         }
