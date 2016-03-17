@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
             String query = params[0];
             SQLiteDatabase sqLiteDatabase = mDBHelper.getReadableDatabase();
             Cursor c = sqLiteDatabase.query(DBHelper.TABLE_NAME, DBHelper.COLUMNS, DBHelper.ITEM + "=?", new String[]{query}, null, null, DBHelper.NUM);
-            
+
             // TODO Remove this return statement when you are done
             return null;
         }
