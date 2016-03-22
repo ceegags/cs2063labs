@@ -16,20 +16,26 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        // TODO Get the intent that started this activity, and get the word and definition
+        // Get the intent that started this activity, and get the word and definition
         // extras from it.
+        Intent intent = getIntent();
+        String wordIn = intent.getStringExtra(WORD);
+        String definitionIn = intent.getStringExtra(DEFINITION);
 
+        // Set the definition TextView to be the definition
+        TextView textView = (TextView) findViewById(R.id.definition_textview);
+        textView.setText(definitionIn);
 
-        // TODO Set the definition TextView to be the definition
-
-
-        // TODO Set the title of the action bar to be the word
+        // Set the title of the action bar to be the word
         //
         // Hint: Note the location of the word (being defined) in the detail activity in
         // the lab exam write-up. This portion of an Activity is the action bar. You can get
         // a reference to the action bar here using getSupportActionBar(). There is a link to
         // documentation on this method in the "Hints" section of the write-up.
-
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(wordIn);
+        }
 
     }
 }

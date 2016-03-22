@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
                 // EditTexts. If so, create and execute an AddTask, passing its
                 // doInBackground method the text from these EditTetxs. If not,
                 // display a toast indicating that the data entered was incomplete.
-                if (mItemEditText.getText().equals(null) || mNumberEditText.getText().equals(null)) {
+                if (mItemEditText.getText().toString().isEmpty() || mNumberEditText.getText().toString().isEmpty()) {
                     Context context = getApplicationContext();
                     CharSequence text = "Invalid input";
                     int duration = Toast.LENGTH_SHORT;
@@ -58,9 +58,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast toast = Toast.makeText(context, text, duration);
                     toast.show();
                 } else {
-                    AddTask addTask = new AddTask();
-                    addTask.doInBackground(mItemEditText.getText().toString(),mNumberEditText.getText().toString());
-                    addTask.execute();
+                    new AddTask().execute(mItemEditText.getText().toString(), mNumberEditText.getText().toString());
                 }
 
 
@@ -77,9 +75,7 @@ public class MainActivity extends AppCompatActivity {
                     // Get the text from this view. Create and execute a QueryTask passing
                     // its doInBackground method this text.
                     String query = mSearchEditText.getText().toString();
-                    QueryTask queryTask = new QueryTask();
-                    queryTask.doInBackground(query);
-                    queryTask.execute();
+                    new QueryTask().execute(query);
 
 
                 }
@@ -118,7 +114,10 @@ public class MainActivity extends AppCompatActivity {
             // changes elsewhere in the app. Exactly how you make the
             // UI behave is up to you, but you should make reasonable
             // choices.
-
+            InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            mItemEditText.setText("");
+            mNumberEditText.setText("");
 
 
         }
@@ -136,10 +135,15 @@ public class MainActivity extends AppCompatActivity {
             // moveToNext().
             String query = params[0];
             SQLiteDatabase sqLiteDatabase = mDBHelper.getReadableDatabase();
-            Cursor c = sqLiteDatabase.query(DBHelper.TABLE_NAME, DBHelper.COLUMNS, DBHelper.ITEM + "=?", new String[]{query}, null, null, DBHelper.NUM);
-
-            // TODO Remove this return statement when you are done
-            return null;
+            Cursor c = sqLiteDatabase.rawQuery("select * from mytable where item like ? order by item,number", new String[]{"%" + query + "%"});
+            String result = "";
+            c.moveToFirst();
+            while(!c.isAfterLast())
+            {
+                result += c.getString(c.getColumnIndex(DBHelper.ITEM)) + ": " + c.getString(c.getColumnIndex(DBHelper.NUM)) + "\n";
+                c.moveToNext();
+            }
+            return result;
         }
 
         protected void onPostExecute(String result) {
@@ -149,6 +153,10 @@ public class MainActivity extends AppCompatActivity {
             // need to write a bit of extra code here, or elsewhere, to get
             // the UI to behave nicely.
 
+            mResultsTextView.setText(result);
+            mSearchEditText.setText("");
+            InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
 
         }
