@@ -100,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
                     DBHelper.TABLE_NAME,
                     null,
                     values);
-            sqLiteDatabase.insert(DBHelper.TABLE_NAME,null,values);
 
             return null;
         }
